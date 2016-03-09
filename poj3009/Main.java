@@ -2,6 +2,7 @@
 	author : jhonprice
 	problem : poj3009
 	language : java
+	note: 注意还原状态值
 */
 
 import java.io.*;
@@ -21,7 +22,7 @@ class Pro
 	public Pro(int w,int h)
 	{
 		ans = new int[2];
-		ans[0] = -1;
+		ans[0] = 9999;
 		ans[1] = 0;
 		W = w;
 		H = h;
@@ -41,54 +42,53 @@ class Pro
 			ey = y;
 		}
 	}
-	//待修改
-	/*void dfs(int x,int y)
+	void dfs(int x,int y)
 	{
+		if(ans[1] > 10)    //注意剪植
+			return;
 		if(x == ex && y == ey)
 		{
-			ans[0] = ans[1];
+			if(ans[0] > ans[1])
+				ans[0] = ans[1];
 			return;
 		}
 		for(int i = 0; i < 4 ; i++)
 		{
 			int nx = x;
 			int ny = y;
-			int step = 0;
-			while(!((nx+dx[i]*step) == ex && (ny+dy[i]*step) == ey) && 0 <= (nx+dx[i]*step) && (nx+dx[i]*step) < H && 0 <= (ny+dy[i]*step) && (ny+dy[i]*step) < W && maze[nx+dx[i]*step][ny+dy[i]*step] != 1)
+			int step = 1;
+
+			while(!(nx + dx[i] * step == ex && ny + dy[i] * step == ey ) && 0 <= (nx + dx[i] * step) && (nx + dx[i] * step) < H && 
+				0 <= (ny + dy[i] * step) && (ny + dy[i] * step) < W && maze[nx + dx[i] * step][ny + dy[i] * step] != 1)
 			{
 				step++;
 			}
-			if(0 > (nx+dx[i]*step) && (nx+dx[i]*step) >= H && 0 > (ny+dy[i]*step) && (ny+dy[i]*step) >= W)
-				continue;
-			else
+			if(nx + dx[i] * step == ex && ny + dy[i] * step == ey)
 			{
-				if((nx+dx[i]*step) == ex && (ny+dy[i]*step) == ey)
-				{
-					nx = nx+dx[i]*step;
-					ny = ny+dy[i]*step;
-					ans[1]++;
-					dfs(nx,ny);
-					nx = nx-dx[i]*step;
-					ny = ny-dy[i]*step;
-				}
-				else if(step == 1)
+				ans[1]++;
+				dfs(nx+dx[i]*step,ny+dy[i]*step);
+				ans[1]--;
+			}
+			else if (!(0 <= (nx + dx[i] * step) && (nx + dx[i] * step) < H && 0 <= (ny + dy[i] * step) && (ny + dy[i] * step) < W)) 
+			{
+				continue;
+			}
+			else if(maze[nx + dx[i] * step][ny + dy[i] * step] == 1)
+			{
+				if(step == 1)
 					continue;
-				else 
+				else
 				{
-					step--;
-					nx = nx+dx[i]*step;
-					ny = ny+dy[i]*step;
-					maze[nx+dx[i]][ny+dy[i]] = 0; 
 					ans[1]++;
-					dfs(nx,ny);
-					nx = nx-dx[i]*step;
-					ny = ny-dy[i]*step;
-					maze[nx+dx[i]][ny+dy[i]] = 1;
+					maze[nx + dx[i] * step][ny + dy[i] * step] = 0;
+					dfs(nx+dx[i]*(step-1),ny+dy[i]*(step-1));
+					ans[1]--;
+					maze[nx + dx[i] * step][ny + dy[i] * step] = 1;
 				}
 			}
 		}
 		return;
-	}*/
+	}
 	void solve()
 	{
 		dfs(sx,sy);
@@ -108,7 +108,7 @@ public class Main
 		Scanner cin = new Scanner(System.in);
 		try
 		{
-			cin = new Scanner(new FileInputStream("I:\\gitdata\\tz\\poj3009\\data.in"));
+			cin = new Scanner(new FileInputStream(".\\data.in"));
 
 		}catch(Exception e){}
 
