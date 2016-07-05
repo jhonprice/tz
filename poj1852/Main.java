@@ -9,6 +9,7 @@ import java.util.*;
 
 class Pro
 {
+	//asdasda
 	private int L;
 	private int N;
 	private int[] x;
